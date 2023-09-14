@@ -214,6 +214,37 @@ def find_department(sess: Session) -> Department:
     return old_department
     
 
+def add_department(sess: Session) -> Department:
+    """
+    Prompt the user for the information for a new student and validate
+    the input to make sure that we do not create any duplicates.
+    :param session: The connection to the database.
+    :return:        None
+    """
+    unique_name: bool = False
+    Name: str = ''
+    # Note that there is no physical way for us to duplicate the student_id since we are
+    # using the Identity "type" for studentId and allowing PostgreSQL to handle that.
+    # See more at: https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-identity-column/
+    while not unique_name or not Name:
+        Name = input("Department name--> ")
+        name_count: int = session.query(Department).filter(Department.Name == Name).count()
+        unique_name = name_count == 0
+        if not unique_name:
+            print("We already have a department by that name.  Try again.")
+        if unique_name:
+            unique_name = name_count == 0
+            #email_count = session.query(Student).filter(Student.eMail == email).count()
+            #unique_email = email_count == 0
+            #if not unique_email:
+                #print("We already have a student with that e-mail address.  Try again.")
+
+    newDepartment = Department(Name)
+    session.add(newDepartment)
+
+
+
+
 if __name__ == '__main__':
     print('Starting off')
     logging.basicConfig()
