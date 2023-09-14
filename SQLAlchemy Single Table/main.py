@@ -7,6 +7,7 @@ from orm_base import metadata
 from Student import Student
 from Option import Option
 from Menu import Menu
+from Department import Department
 
 
 def add_student(session: Session):
