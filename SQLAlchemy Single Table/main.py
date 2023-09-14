@@ -175,13 +175,17 @@ def select_student_from_list(session):
     # will present challenges in the exec call, so I didn't bother.
     print("Selected student: ", returned_student)
 
-def list_students(session: Session):    
-    """    List all of the students, sorted by the last name first, then the first name.    :param session:    :return:     """    
-    # session.query returns an iterator.  The list function converts that iterator   
-    # into a list of elements.  In this case, they are instances of the Student class.    
-    students: [Student] = list(session.query(Student).order_by(Student.lastName, Student.firstName))    
-    for student in students:        
-        print(student)
+def list_department(session: Session):   
+    """    
+    List all of the students, sorted by the last name first, then the first name.    
+    :param session:    
+    :return:      """        
+    # session.query returns an iterator.  The list function converts that iterator      
+    # into a list of elements.  In this case, they are instances of the Student class. 
+    
+    departments: [Department] = list(session.query(Department).order_by(Department.name))    
+    for department in departments:        
+        print(department)
 
 def find_department(sess: Session) -> Department:
     """
