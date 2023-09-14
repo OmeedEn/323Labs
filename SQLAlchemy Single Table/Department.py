@@ -19,10 +19,10 @@ class Department(Base):
 
 
 
-    __table_args__ = (UniqueConstraint("name", name="students_uk_01"),
-                      UniqueConstraint("abbreviation", name="students_uk_02"),
-                      UniqueConstraint("chair_name", name="students_uk_02"),
-                      UniqueConstraint("description", name="students_uk_02"),
+    __table_args__ = (UniqueConstraint("name", name="departments_uk_01"),
+                      UniqueConstraint("abbreviation", name="departments_uk_02"),
+                      UniqueConstraint("chair_name", name="departments_uk_03"),
+                      UniqueConstraint("description", name="departments_uk_04"),
                       UniqueConstraint('building != office', name='building_office_check'))
 
     def __init__(self, name: str, abbreviation : str, chair_name : str, building : str, office : int, description : str):
