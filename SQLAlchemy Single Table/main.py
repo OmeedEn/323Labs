@@ -183,6 +183,32 @@ def list_students(session: Session):
     for student in students:        
         print(student)
 
+def find_department(sess: Session) -> Department:
+    """
+    Prompt the user for attribute values to select a single student.
+    :param sess:    The connection to the database.
+    :return:        The instance of Student that the user selected.
+                    Note: there is no provision for the user to simply "give up".
+    """
+    find_department_command = department_select.menu_prompt()
+    match find_department_command:
+        case "name":
+            old_department = select_department_name(sess)
+        case "abbreviation":
+            old_department = select_deparement_abbreviation(sess)
+        case "chair_name":
+            old_department = select_department_chair_name(sess)
+        case "building":
+            old_department = select_department_building(sess)
+        case "office":
+            old_department = select_department_office(sess)
+        case "description":
+            old_department = select_department_description(sess)
+        case _:
+            old_department = None
+    return old_department
+    
+
 if __name__ == '__main__':
     print('Starting off')
     logging.basicConfig()
