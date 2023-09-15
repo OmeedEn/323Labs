@@ -103,6 +103,88 @@ def select_student_email(sess: Session) -> Student:
     return return_student
 
 
+
+def select_department_name(sess: Session) -> Department:
+    found: bool = False
+    department_name: str = ''
+    while not found:
+        department_name = input("Enter the department name --> ")
+        name_count: int = sess.query(Department).filter(Department.department_name == department_name).count()
+        found = name_count == 1
+        if not found:
+            print("No department with that name.  Try again.")
+
+    return_department: Department = sess.query(Department).filter(department_name == Name).first()
+    return return_department
+
+
+def select_department_abbreviation(sess: Session) -> Department:
+    found: bool = False
+    department_abbreviation: str = ''
+    while not found:
+        department_abbreviation = input("Enter the department abbreviation --> ")
+        name_count: int = sess.query(Department).filter(Department.department_abbreviation == department_abbreviation).count()
+        found = name_count == 1
+        if not found:
+            print("No department with that abbreviation.  Try again.")
+
+    return_department: Department = sess.query(Department).filter(department_abbreviation == abbreviation).first()
+    return return_department
+
+def select_department_chair_name(sess: Session) -> Department:
+    found: bool = False
+    department_chair_name: str = ''
+    while not found:
+        department_chair_name = input("Enter the department chair name --> ")
+        name_count: int = sess.query(Department).filter(Department.department_chair_name == department_chair_name).count()
+        found = name_count == 1
+        if not found:
+            print("No department chair with that name.  Try again.")
+
+    return_department: Department = sess.query(Department).filter(department_chair_name == chair_name).first()
+    return return_department
+
+def select_department_building(sess: Session) -> Department:
+    found: bool = False
+    department_building: str = ''
+    while not found:
+        department_building = input("Enter the department building --> ")
+        name_count: int = sess.query(Department).filter(Department.department_building == department_building).count()
+        found = name_count == 1
+        if not found:
+            print("Department building not found.  Try again.")
+
+    return_department: Department = sess.query(Department).filter(department_building == building).first()
+    return return_department
+
+def select_department_office(sess: Session) -> Department:
+    found: bool = False
+    department_office: str = ''
+    while not found:
+        department_office = input("Enter the department office --> ")
+        name_count: int = sess.query(Department).filter(Department.department_office == department_office).count()
+        found = name_count == 1
+        if not found:
+            print("Department office not found.  Try again.")
+
+    return_department: Department = sess.query(Department).filter(department_office == office).first()
+    return return_department
+
+def select_department_description(sess: Session) -> Department:
+    found: bool = False
+    department_description: str = ''
+    while not found:
+        department_description = input("Enter the department description --> ")
+        name_count: int = sess.query(Department).filter(Department.department_description == department_description).count()
+        found = name_count == 1
+        if not found:
+            print("Department description not found.  Try again.")
+
+    return_department: Department = sess.query(Department).filter(department_description == description).first()
+    return return_department
+
+
+
 def find_student(sess: Session) -> Student:
     """
     Prompt the user for attribute values to select a single student.
