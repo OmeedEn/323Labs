@@ -1,5 +1,5 @@
 import logging
-from menu_definitions import menu_main, student_select, debug_select
+from menu_definitions import menu_main, student_select, department_select, debug_select
 from db_connection import engine, Session
 from orm_base import metadata
 # Note that until you import your SQLAlchemy declarative classes, such as Student, Python
@@ -114,7 +114,7 @@ def select_department_name(sess: Session) -> Department:
         if not found:
             print("No department with that name.  Try again.")
 
-    return_department: Department = sess.query(Department).filter(department_name == Name).first()
+    return_department: Department = sess.query(Department).filter(department_name == department_name).first()
     return return_department
 
 
@@ -128,7 +128,7 @@ def select_department_abbreviation(sess: Session) -> Department:
         if not found:
             print("No department with that abbreviation.  Try again.")
 
-    return_department: Department = sess.query(Department).filter(department_abbreviation == abbreviation).first()
+    return_department: Department = sess.query(Department).filter(department_abbreviation == department_abbreviation).first()
     return return_department
 
 def select_department_chair_name(sess: Session) -> Department:
@@ -141,7 +141,7 @@ def select_department_chair_name(sess: Session) -> Department:
         if not found:
             print("No department chair with that name.  Try again.")
 
-    return_department: Department = sess.query(Department).filter(department_chair_name == chair_name).first()
+    return_department: Department = sess.query(Department).filter(department_chair_name == department_chair_name).first()
     return return_department
 
 def select_department_building(sess: Session) -> Department:
@@ -154,7 +154,7 @@ def select_department_building(sess: Session) -> Department:
         if not found:
             print("Department building not found.  Try again.")
 
-    return_department: Department = sess.query(Department).filter(department_building == building).first()
+    return_department: Department = sess.query(Department).filter(department_building == department_building).first()
     return return_department
 
 def select_department_office(sess: Session) -> Department:
@@ -167,7 +167,7 @@ def select_department_office(sess: Session) -> Department:
         if not found:
             print("Department office not found.  Try again.")
 
-    return_department: Department = sess.query(Department).filter(department_office == office).first()
+    return_department: Department = sess.query(Department).filter(department_office == department_office).first()
     return return_department
 
 def select_department_description(sess: Session) -> Department:
@@ -180,7 +180,7 @@ def select_department_description(sess: Session) -> Department:
         if not found:
             print("Department description not found.  Try again.")
 
-    return_department: Department = sess.query(Department).filter(department_description == description).first()
+    return_department: Department = sess.query(Department).filter(department_description == department_description).first()
     return return_department
 
 
@@ -282,7 +282,7 @@ def find_department(sess: Session) -> Department:
         case "name":
             old_department = select_department_name(sess)
         case "abbreviation":
-            old_department = select_deparement_abbreviation(sess)
+            old_department = select_department_abbreviation(sess)
         case "chair_name":
             old_department = select_department_chair_name(sess)
         case "building":
