@@ -10,12 +10,12 @@ class Department(Base):
     __tablename__ = "departments"  # Give SQLAlchemy th name of the table.
 
     """attributes"""
-    name: Mapped[str] = mapped_column('name', String(80), nullable=False, primary_key=True)
-    abbreviation = Mapped[str] = mapped_column('abbreviation', String(6), unique=True, nullable=False)
-    chair_name = Mapped[str] = mapped_column('chair_name', String(80), unique=True, nullable=False)
-    building = Mapped[str] = mapped_column('building', String(10), nullable=False)
-    office = Mapped[str] = mapped_column('office', Integer, nullable=False)
-    description = Mapped[str] = mapped_column('description', String(80), unique=True, nullable=False)
+    name = mapped_column('name', String(80), nullable=False, primary_key=True)
+    abbreviation = mapped_column('abbreviation', String(6), unique=True, nullable=False)
+    chair_name = mapped_column('chair_name', String(80), unique=True, nullable=False)
+    building = mapped_column('building', String(10), nullable=False)
+    office = mapped_column('office', Integer, nullable=False)
+    description = mapped_column('description', String(80), unique=True, nullable=False)
 
 
 
@@ -23,7 +23,7 @@ class Department(Base):
                       UniqueConstraint("abbreviation", name="departments_uk_02"),
                       UniqueConstraint("chair_name", name="departments_uk_03"),
                       UniqueConstraint("description", name="departments_uk_04"),
-                      UniqueConstraint('building != office', name='building_office_check'))
+                      UniqueConstraint('building', 'office', name='building_office_check'))
 
     def __init__(self, name: str, abbreviation : str, chair_name : str, building : str, office : int, description : str):
         self.name = name
