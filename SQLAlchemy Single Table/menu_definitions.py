@@ -32,6 +32,16 @@ student_select = Menu('student select', 'Please select how you want to select a 
     Option("Electronic mail", "email")
 ])
 
+
+department_select = Menu('department select', 'Please select how you want to select a department:', [    
+    Option("Name", "Name"),    
+    Option("Abbreviation", "Abbreviation"),    
+    Option("Chair name", "Chain name"),    
+    Option("Office", "Office"),   
+    Option("Building", "Building"),    
+    Option("Description", "Description")
+])
+
 # A menu to prompt for the amount of logging information to go to the console.
 debug_select = Menu('debug select', 'Please select a debug level:', [
     Option("Informational", "logging.INFO"),
