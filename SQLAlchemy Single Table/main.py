@@ -258,7 +258,7 @@ def select_student_from_list(session):
     # will present challenges in the exec call, so I didn't bother.
     print("Selected student: ", returned_student)
 
-def list_department(session: Session):   
+def list_departments(session: Session):   
     """    
     List all of the students, sorted by the last name first, then the first name.    
     :param session:    
