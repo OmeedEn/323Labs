@@ -311,6 +311,22 @@ def add_department(session: Session) -> Department:
     while not unique_name or not Name:
         Name = input("Department name--> ")
         name_count: int = session.query(Department).filter(Department.Name == Name).count()
+        
+        Abbr = input("Abbreviation name--> ")
+        abbr_count: int = session.query(Department).filter(Department.abbreviation == Abbr).count()
+        
+        ChairName = input("Chair Name-->")
+        chair_name_count: int = session.query(Department).filter(Department.chair_name == ChairName).count()
+        
+        Building = input("Building-->")
+        building_count: int = session.query(Department).filter(Department.building == Building).count()
+        
+        Office = input("Office-->")
+        office_count: int = session.query(Department).filter(Department.office == Office).count()
+        
+        Description = input("Description-->")
+        desc_count: int = session.query(Department).filter(Department.description == Description).count()
+        
         unique_name = name_count == 0
         if not unique_name:
             print("We already have a department by that name.  Try again.")
