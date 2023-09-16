@@ -303,42 +303,29 @@ def add_department(session: Session) -> Department:
     :param session: The connection to the database.
     :return:        None
     """
-    unique_name: bool = False
-    Name: str = ''
-    # Note that there is no physical way for us to duplicate the student_id since we are
-    # using the Identity "type" for studentId and allowing PostgreSQL to handle that.
-    # See more at: https://www.postgresqltutorial.com/postgresql-tutorial/postgresql-identity-column/
-    while not unique_name or not Name:
-        Name = input("Department name--> ")
-        name_count: int = session.query(Department).filter(Department.Name == Name).count()
+    while True:    
+        Name = input("Department name --> ")    
+        if not Name:        
+            print("Department name cannot be empty. Try again.")        
+            continue    
+            
+        # Check if the department name already exists in the database    
+        existing_department = session.query(Department).filter(Department.name == Name).first()    
+        if existing_department:        
+            print("A department with that name already exists. Try again.")    
+        else:        
+            break
         
-        Abbr = input("Abbreviation name--> ")
-        abbr_count: int = session.query(Department).filter(Department.abbreviation == Abbr).count()
-        
-        ChairName = input("Chair Name-->")
-        chair_name_count: int = session.query(Department).filter(Department.chair_name == ChairName).count()
-        
-        Building = input("Building-->")
-        building_count: int = session.query(Department).filter(Department.building == Building).count()
-        
-        Office = input("Office-->")
-        office_count: int = session.query(Department).filter(Department.office == Office).count()
-        
-        Description = input("Description-->")
-        desc_count: int = session.query(Department).filter(Department.description == Description).count()
-        
-        unique_name = name_count == 0
-        if not unique_name:
-            print("We already have a department by that name.  Try again.")
-        if unique_name:
-            unique_name = name_count == 0
-            #email_count = session.query(Student).filter(Student.eMail == email).count()
-            #unique_email = email_count == 0
-            #if not unique_email:
-                #print("We already have a student with that e-mail address.  Try again.")
-
-    newDepartment = Department(Name)
-    session.add(newDepartment)
+    abbreviation = input("Abbreviation name --> ")
+    chair_name = input("Chair Name --> ")
+    building = input("Building --> ")
+    office = int(input("Office --> "))
+    description = input("Description --> ")
+    new_department = Department(name=Name, abbreviation=abbreviation, chair_name=chair_name,                            
+                                building=building, office=office, description=description)
+    
+    session.add(new_department)
+    session.commit()
 
 
 
