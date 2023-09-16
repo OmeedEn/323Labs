@@ -296,7 +296,7 @@ def find_department(sess: Session) -> Department:
     return old_department
     
 
-def add_department(sess: Session) -> Department:
+def add_department(session: Session) -> Department:
     """
     Prompt the user for the information for a new student and validate
     the input to make sure that we do not create any duplicates.
