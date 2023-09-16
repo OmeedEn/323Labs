@@ -34,5 +34,5 @@ class Department(Base):
         self.description = description
 
     def __str__(self):
-        return f"Name: {self.name}, Abbreviation: {self.abbreviation}, Chair Name: {self.chair_name}" \
+        return f"Name: {self.name}, Abbreviation: {self.abbreviation}, Chair Name: {self.chair_name}, " \
                f"Building: {self.building}, Office: {self.office}, Description: {self.description}"
