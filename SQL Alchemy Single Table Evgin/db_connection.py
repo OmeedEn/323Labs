@@ -31,7 +31,6 @@ database            The name of the database within this particular instance of
                     PostgreSQL.  Every PostgreSQL has a postgres database, but
                     you can create additional databases as needed.  Each CECS 323
                     section has their own database in the campus PostgreSQL instance."""
-userID: str = input('User ID [postgres]--> ') or "postgres"
 """In order to get getpass to prompt you on the console, go to Run | Edit Configurations
 in the top menu, and check the box: 'Emulate terminal in output console'.  Otherwise,
 you will never see the prompt for the database password."""
@@ -41,10 +40,11 @@ of the input function is a null string, which evaluates to False from a Boolean
 standpoint.  Which then means that the or with a text literal will result in that
 literal as the output from the or operator.  Sort of a ghetto way to implement a
 default, but it works.  What can I say."""
-password: str = getpass.getpass(prompt=userID + ' password--> ')
-host: str = input('hostname [localhost]--> ') or "localhost"
-port: str = input('port number [5433]--> ') or "5433"
-database: str = input('database [postgres]--> ') or "postgres"
+userID: str = '028691037'
+password: str = '58zzwlJm'
+host: str = 'CECS-Postgresql'
+port: str = '5432'
+database: str = '2023FallS01'
 # 'psycopg2' in this part of the db_url instructs SQLAlchemy that we are connecting to a PostgreSQL database.
 db_url: str = f"postgresql+psycopg2://{userID}:{password}@{host}:{port}/{database}"
 db_url_display: str = f"postgresql+psycopg2://{userID}:********@{host}:{port}/{database}"
