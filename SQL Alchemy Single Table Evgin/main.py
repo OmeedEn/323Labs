@@ -55,11 +55,16 @@ def add_department(session: Session):
     while not unique_office_bldg:
         office = input("Office name--> ")
         building = input("Building name--> ")
-        office_bldg_count: int = session.query(Department).filter(Department.office == office,
-                                                                  Department.building == building).count()
-        unique_office_bldg = office_bldg_count == 0
-        if not unique_office_bldg:
-            print("We already have a department in that office and building. Try again.")
+        
+        existing_department = session.query(Department).filter(
+            Department.office == office,
+            Department.building == building
+        ).first()
+
+        if existing_department:
+            print("A department already exists with the same office and building. Try again.")
+        else:
+            unique_office_bldg = True
 
     while not unique_desc:
         description = input("Department description--> ")
