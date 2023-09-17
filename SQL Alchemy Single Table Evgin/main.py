@@ -188,7 +188,8 @@ def add_department(session: Session):
     unique_name: bool = False  # name (primary key)
     unique_abbr: bool = False  # abbreviation
     unique_chair: bool = False  # chair name
-    unique_office_bldg: bool = False  # office / building
+    unique_office: bool = False # office
+    unique_building: bool = False # building
     unique_desc: bool = False  # description
 
     # attributes
@@ -220,19 +221,20 @@ def add_department(session: Session):
         if not unique_chair:
             print("We already have a department with that chair. Try again.")
 
-    while not unique_office_bldg:
+    while not unique_office:
         office = input("Office name--> ")
-        building = input("Building name--> ")
-        
-        existing_department = session.query(Department).filter(
-            Department.office == office,
-            Department.building == building
-        ).first()
+        office_count: int = session.query(Department).filter(Department.office == office).count()
+        unique_office = office_count == 0
+        if not unique_office:
+            print("We already have a department in that office. Try again.")
 
-        if existing_department:
-            print("A department already exists with the same office and building. Try again.")
-        else:
-            unique_office_bldg = True
+    while not unique_building:
+        building = input("Building name--> ")
+        building_count: int = session.query(Department).filter(Department.building == building).count()
+        unique_building = building_count == 0
+        if not unique_building:
+            print("We already have a department in that building. Try again.")
+
 
     while not unique_desc:
         description = input("Department description--> ")
