@@ -337,7 +337,10 @@ def add_department(session: Session) -> Department:
     session.add(new_department)
     session.commit()
 
-
+def delete_department():
+    print("deleting department")
+    oldDepartment = find_department(session)
+    session.delete(oldDepartment)
 
 
 if __name__ == '__main__':
