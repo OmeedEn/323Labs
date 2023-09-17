@@ -280,6 +280,16 @@ def select_department():
     returned_department = sess.query(Department).filter(Department.department_name == int(text_department)).first()
     print("Selected department: ", returned_department)
 
+def select_department_from_list(session):
+    departments: [Department] = list(sess.query(Department).order_by(department_name()))
+    options: [Option] = []
+    for Department in departments:
+        options.append(Option(department_name))
+    temp_menu = Menu('Department list', 'Select a department from this list', options)
+    text_department: str = temp_menu.menu_prompt()
+    returned_department = sess.query(Department).filter(department_name == int(text_department).first())
+    print("Selected student: ", returned_department)
+
 def find_department(sess: Session) -> Department:
     """
     Prompt the user for attribute values to select a single student.
