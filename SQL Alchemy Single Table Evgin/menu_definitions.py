@@ -17,8 +17,20 @@ menu_main = Menu('main', 'Please select one of the following options:', [
     Option("Delete department", "delete_department(sess)"),
     Option("List all departments", "list_departments(sess)"),
     Option("Select department from list", "select_department_from_list(sess)"),
+    Option("Add student", "add_student(sess)"),
+    Option("Delete student", "delete_student(sess)"),
+    Option("List all students", "list_students(sess)"),
+    Option("Select student from list", "select_student_from_list(sess)"),
     Option("Exit", "pass")
 ])
+
+
+student_select = Menu('student select', 'Please select how you want to select a student:', [
+    Option("ID", "ID"),
+    Option("First and last name", "first/last name"),
+    Option("Electronic mail", "email")
+])
+
 
 department_select = Menu('department select', 'Please select how you want to select a department:', [
     Option("Name", "name"),
