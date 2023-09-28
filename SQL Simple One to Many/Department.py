@@ -5,6 +5,7 @@ from sqlalchemy import Table
 from sqlalchemy.orm import Mapped, mapped_column, relationship, column_property
 from typing import List  # Use this for the list of courses offered by the department
 from constants import START_OVER, INTROSPECT_TABLES, REUSE_NO_INTROSPECTION
+import Course
 
 """I'm defining my attributes and functions in another file as something of an
 experiment.  I have to do virtually the same class definition regardless whether the
@@ -66,46 +67,22 @@ if introspection_type == START_OVER | introspection_type == REUSE_NO_INTROSPECTI
                    f"building: {self.building}, office: {self.office}, description: {self.description}"
 
 elif introspection_type == INTROSPECT_TABLES:
-    # We need to connect to the database to introspect the table.  So I'm getting that done
-    # now, rather than in main.  Connection is a singleton factory of sorts.
     class Department(Base):
-        # Creating the Table object does the introspection.  Basically, __table__
-        # allows SQLAlchemy to copy the metadata from the Table object into Base.metadata.
-        __table__ = Table(DC.__tablename__, Base.metadata, autoload_with=engine)
-        # The uniqueness constraint that I explicitly define for the START_OVER approach is already
-        # defined, so I don't need it here, so no __table_args__ needed.  The same consideration
-        # applies to a foreign key constraint with multiple columns in the parent's primary key.
 
-        # The courses list will not get created just from introspecting the database, so I'm doing that here.
+        table = Table(DC.__tablename__, Base.metadata, autoload_with=engine)
         courses: Mapped[List["Course"]] = DC.courses
-        # I'm not actually overriding the attribute name here, I just want to see if I can do it.
-        # The __table__ attribute refers to the Table object that we created by introspection.
-        # More on metadata: https://docs.sqlalchemy.org/en/20/core/metadata.html
-        abbreviation: Mapped[str] = column_property(__table__.c.abbreviation)
+        abbreviation: Mapped[str] = column_property(table.c.abbreviation)
+        chairName: Mapped[str] = column_property(table.c.chair_name)
 
-        def __init__(self, name: str, abbreviation: str, chair_name: str, building: str, office: int, description: str):
+        def init(self, name: str, abbreviation: str, chairName: str, building: str, office: int, description: str):
             self.name = name
             self.abbreviation = abbreviation
-            self.chair_name = chair_name
+            self.chairName = chairName
             self.building = building
             self.office = office
             self.description = description
 
-        def __str__(self):
-            return f"Department name: {self.name}, abbreviation: {self.abbreviation}, chair name: {self.chair_name}\n" \
-                   f"building: {self.building}, office: {self.office}, description: {self.description}"
-
-"""I tried to bring in __init__ from the imported code in each of these two (see below)
-ways, and in both cases when I tried to use the __init__ constructor, it blew up with
-an error telling me that Department has no attribute: _sa_instance_state which I
-GUESS means that the the __init__ method was somehow not included in vital processing 
-that SQLAlchemy does at the end of defining the class.  Pure guesswork on my part."""
-
-"""I could have defined these methods in this file, and then used setattr to add them
-to the Department class, but I figured that dividing it up this way made Department.py
-a little less cluttered.  I'm still boggled that all of these methods are instance
-methods, and they add to the existing class just fine.  Python is scary sometimes."""
 setattr(Department, 'add_course', DC.add_course)
 setattr(Department, 'remove_course', DC.remove_course)
 setattr(Department, 'get_courses', DC.get_courses)
-setattr(Department, '__str__', DC.__str__)
+setattr(Department, 'str', DC.__str__)
