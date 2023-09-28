@@ -83,6 +83,10 @@ def set_department(self, department: Department):
     self.departmentAbbreviation = department.abbreviation
 
 
+def get_section(self):
+    return self.section
+
+
 def __str__(self):
     return f"Department abbrev: {self.departmentAbbreviation} number: {self.courseNumber} name: {self.name} units: {self.units}"
 
