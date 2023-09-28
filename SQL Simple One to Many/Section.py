@@ -7,14 +7,14 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship, column_property
 from sqlalchemy import Table
 from Department import Department
 from constants import START_OVER, REUSE_NO_INTROSPECTION, INTROSPECT_TABLES
-import Course
+from Course import Course
 from sqlalchemy.types import Time
 from sqlalchemy import create_engine, Column, Integer, String, CheckConstraint
 table_name: str = "sections"
 
 introspection_type = IntrospectionFactory().introspection_type
 if introspection_type == START_OVER | introspection_type == REUSE_NO_INTROSPECTION:
-    class Section(Course):
+    class Section(Base):
         __tablename__ = table_name
 
         """attributes"""
@@ -37,12 +37,14 @@ if introspection_type == START_OVER | introspection_type == REUSE_NO_INTROSPECTI
                           UniqueConstraint("year", "semester", "schedule", "start_time", "instructor", name="sections_uk_02"),
                           CheckConstraint(semester.in_(['Fall', 'Spring', 'Winter', 'Summer I', 'Summer II']), name='valid_semester_check'),
                           CheckConstraint(building.in_(["VEC", "ECS", "EN2", "EN3", "EN4", "ET", "SSPA"])),
-                          CheckConstraint(schedule.in_(["MW", "TuTh", "MWF", "F", "S"])))
+                          CheckConstraint(schedule.in_(["MW", "TuTh", "MWF", "F", "S"])),
+                          ForeignKeyConstraint([course_number, department_abbreviation],
+                                               [Course.courseNumber, Course.departmentAbbreviation]))
 
 
 
         def __int__(self, department_abbreviation: str, course_number:str, section_number:str, semester:str, section_year:int,
-                    building:str, room:int, schedule:str, instructor:str, start_time:str):
+                    building:str, room:int, schedule:str, instructor:str, start_time:Time):
 
             self.department_abbreviation = department_abbreviation
             self.course_number = course_number
@@ -56,18 +58,31 @@ if introspection_type == START_OVER | introspection_type == REUSE_NO_INTROSPECTI
             self.start_time = start_time
 
 elif introspection_type == INTROSPECT_TABLES:
-    class Section(Course):
+    class Section(Base):
         __table__ = Table(table_name, Base.metadata, autoload_with=engine)
         departmentAbbreviation: Mapped[str] = column_property(__table__.c.department_abbreviation)
-        department: Mapped["Department"] = relationship(back_populates="section")
+        sectionNumber: Mapped[str] = column_property(__table__.c.section_number)
+        semester: Mapped[str] = column_property(__table__.c.semester)
+        sectionYear: Mapped[int] = column_property(__table__.c.section_year)
+        building: Mapped[str] = column_property(__table__.c.building)
+        room: Mapped[int] = column_property(__table__.c.room)
+        schedule: Mapped[str] = column_property(__table__.c.schedule)
+        start_time: Mapped[Time] = column_property(__table__.c.start_time)
+        instructor: Mapped[str] = column_property(__table__.c.instructor)
         courseNumber: Mapped[int] = column_property(__table__.c.course_number)
+        course: Mapped['Course'] = relationship(back_populates="section")
 
-        def __init__(self, department: Department, courseNumber: int, name: str, description: str, units: int):
-            self.set_department(department)
-            self.courseNumber = courseNumber
-            self.name = name
-            self.description = description
-            self.units = units
+        def init(self, course: Course, sectionNumber: int, semester: str, sectionYear: int,
+                 building: str, room: int, schedule: str, startTime: Time, instructor: str):
+            self.set_course(course)
+            self.sectionNumber = sectionNumber
+            self.semester = semester
+            self.sectionYear = sectionYear
+            self.building = building
+            self.room = room
+            self.schedule = schedule
+            self.start_time = startTime
+            self.instructor = instructor
 
 def __str__(self):
     return f"Department Abbreviation: {self.department_abbreviation}, Course Number: {self.course_number}, " \
