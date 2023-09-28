@@ -81,65 +81,63 @@ def add_course(session):
     session.add(course)
 
 def add_section(session):
-    print("Which Course offers this section?")
-    course: Course = select_course(session)
+    scheduleList = ['MW', 'TuTh', 'F', 'MWF', 'S']
+    semesterList = ['Fall', 'Spring', 'Winter', 'Summer I', 'Summer II']
     unique_meeting: bool = False
     unique_booking: bool = False
+    course: Course = select_course(sess)
+    department_abbr: str = ''
     section_number: int = -1
-    semester: str = ''
     section_year: int = -1
+    semester: str = ''
     building: str = ''
     room: int = -1
-    schedule: str = ''
     instructor: str = ''
     start_time: time = time(0, 0, 0)
 
+
     while not unique_meeting or not unique_booking:
         section_number = int(input("Section number--> "))
-        section_year = int(input("Please enter the section year -->"))
-        semester = input('Please enter the course description-->')
-        schedule = input("Please enter a schedule-->")
-        building = input("Please enter the building number-->")
-        room = int(input("Please enter a room number-->"))
-
-        #time
+        year = int(input('Enter a Year --> '))
+        semester = input('Enter a Semester --> ')
+        if semester not in semesterList:
+            print("Not an actual semester, Try Again")
+            continue
+        schedule = input('Enter Schedule --> ')
+        if schedule not in scheduleList:
+            print('Not an actual Schedule, Try Again')
+            continue
+        # time
         hour = int(input("What is the hour for the time: "))
         minute = int(input("What is the minute for the time: "))
         second = 0
         start_time = time(hour, minute, second)
-        section_count: int = session.query(Section).filter(Section.section_year == section_year, Section.semester == semester,
-                                                            Section.schedule == schedule, Section.start_time == start_time,
-                                                           Section.building == building, Section.room == room).count()
 
-        instructor: str = input("Please enter the instructor name-->")
-        unique_meeting = section_count == 0
+        building = input('Enter a Building --> ')
+        room = int(input('Enter a Room Number --> '))
+        instructor = input("Enter an Instructor --> ")
+        department_abbr = input("Enter a Department Abbreviation--> ")
+
+        check1 = session.query(Section).filter(Section.section_year == section_year,
+                                                       Section.semester == semester,
+                                                       Section.start_time == start_time,
+                                                       Section.building == building,
+                                                       Section.room == room).count()
+        unique_meeting = check1 == 0
+
+        check2 = session.query(Section).filter(Section.section_year == year,
+                                                       Section.semester == semester,
+                                                       Section.start_time == start_time,
+                                                       Section.instructor == instructor).count()
+        unique_booking = check2 == 0
+
         if not unique_meeting:
-            print("We already have a section in the same room at the same time. Try again")
-        if unique_meeting:
-            section2_count = session.query(Section).filter(Section.section_year == section_year, Section.semester == semester,
-                                                           Section.schedule == schedule, Section.start_time == start_time,
-                                                           Section.instructor == instructor).count()
-            unique_booking = section2_count == 0
-            if not unique_booking:
-                print("We have already booked that instructor for that class at that time. try again")
+            print("There is a section that is in that Year, semester, start time, building, and room.")
+        if not unique_booking:
+            print('There is a section that already has that year, semester, start time, and instructor.')
 
-    #     unique_number = section_count == 0
-    #     if not unique_number:
-    #         print("We already have a section in this course with that number.  Try again.")
-    #     if unique_number:
-    #         number_count = session.query(Section).filter(Section.department_abbreviation == Department.abbreviation,
-    #                                                      section_number == section_number).count()
-    #         unique_number = number_count == 0
-    #         if not unique_number:
-    #             print("We already have a section in this course with that number.  Try again.")
-    # while not
-
-    #add while not loops in order for check constraints
-
-    section = Section(Section.department_abbreviation, Section.course_number, section_number, semester,
-                      section_year, building, room, schedule, instructor, start_time)
-    session.add(section)
-
+    newSection = Section(department_abbr, course, section_number, semester, section_year, building, room, schedule, instructor, start_time)
+    session.add(newSection)
 
 def select_department(sess) -> Department:
     """
@@ -160,23 +158,21 @@ def select_department(sess) -> Department:
         filter(Department.abbreviation == abbreviation).first()
     return return_student
 
-def select_section(sess) -> Section:
+def select_section(sess):
     found: bool = False
-    department_abbreviation: str = ''
+    course_number: int = -1
     section_number: int = -1
-    section_year: int = -1
-    semester: str = ''
-    # add section_number, year, semester
     while not found:
-        department_abbreviation = input("Department abbreviation: ")
-        section_number = int(input("Section Number: "))
-        number_count: int = sess.query(Section).filter(Section.department_abbreviation == department_abbreviation,
-                                                     Section.course_number == section_number).count()
-        found = number_count == 1
+        course_number = int(input("Course Number--> "))
+        section_number = int(input("Section Number--> "))
+        name_count: int = sess.query(Section).filter(Section.courseNumber == course_number,
+                                                     Section.sectionNumber == section_number).count()
+        found = name_count == 1
         if not found:
-            print("No section by that number in that course. Try again")
-    section = sess.query(Section).filter(Section.department_abbreviation == department_abbreviation,
-                                         Section.course_number == section_number).first()
+            print("No section by that number in that department. Try again.")
+    section = sess.query(Section).filter(Section.courseNumber == course_number,
+                                        Section.sectionNumber == section_number).first()
+
     print(f"Selected Section: {section}")
     return section
 
@@ -208,7 +204,7 @@ def delete_course(sess):
     print("deleting a course")
     course = select_course(sess)
     department = course.department
-    n_section = sess.query(Section).filter(Section.department_abbreviation == Department.abbreviation).count()
+    n_section = sess.query(Section).filter(Section.courseNumber == course.courseNumber).count()
     if n_section > 0:
         print(f"There are {n_section} sections in that course. Please delete them first")
     else:
@@ -262,11 +258,13 @@ def list_courses(sess):
     for course in courses:
         print(course)
 
-def list_section(sess):
 
-    sections: [Section] = sess.query(Section).order_by(Section.section_number)
-    for section in sections:
-        print(section)
+def list_course_sections(sess):
+    courses = select_course(sess)
+    course_section: [Section] = courses.get_section()
+    print("Section for course: " + str(courses))
+    for course_section in course_section:
+        print(course_section)
 
 def move_course_to_new_department(sess):
     """
